@@ -1,0 +1,14 @@
+input_fields : 
+    tokens : 'tokens'
+    lang : 'lang'
+    pos : 'pos'
+output_field : 'posgrammar'
+tmp_dir: 'tmp'
+unitex_dir: 'conf/unitex'
+allowed_flex_codes: []
+allowed_pos_tags: ['UNKNOWN', 'FROM', 'TO', 'PERSON', 'SCALE', 'LOCATION', 'AIRLINE', 'TYPE', 'NUMBER', 'PEOPLE', 'BUSINESS', 'TOURIST']
+grammar_applied: ['travel.fst2']
+supported_langs: ['es','en']
+delas_applied: 
+    en: ['en/types.bin', 'currencies.bin']
+    es: ['en/types.bin']
