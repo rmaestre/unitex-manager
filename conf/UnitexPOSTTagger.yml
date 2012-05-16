@@ -1,4 +1,4 @@
-tmp_dir: 'tmp'
+tmp_dir: '/tmp'
 unitex_dir: 'conf/unitex'
 delas_applied: 
     es: ['es/country.bin']

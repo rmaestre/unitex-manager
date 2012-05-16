@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """ 
-Unitex utils
+Unitex manager
 
 """
 from unitex_tools import *
@@ -13,6 +13,7 @@ class UniteManager():
     def __init__(self):
         # Create a Unitex binding object
         self.manager = pyunitex.Unitex()
+        
         
     def tokenizer(self, input_str, lang):
         """
@@ -63,10 +64,12 @@ class UniteManager():
         
         
         
-        
-    def postagger(self, tokenss, lang):
+    def postagger(self, tokens, lang):
         """
+        Whole process to apply posttagging to a list of tokens
         
+        Returns:
+        Documents with POSTTagging
         """
         # Load tokenizer configuration
         f = open('conf/UnitexPOSTTagger.yml')
@@ -125,22 +128,84 @@ class UniteManager():
         return generate_pos(tags, tokens, self.conf['allowed_flex_codes'], self.conf['allowed_pos_tags'])
         
         
+    def grammar(self, tokens, pos, lang):
+        """
+        Whole process to apply posttagging to a list of tokens
+
+        Returns:
+        Documents with POSTTagging
+        """
+        # Load tokenizer configuration
+        f = open('conf/UnitexGrammar.yml')
+        self.conf = yaml.load(f)
+        f.close()
+        # Assertions
+        assert(lang in self.conf['supported_langs'])
+        assert(type(tokens) == list)
+        assert(type(pos) == list)
+        # Process tokens
+        tokens_flatten = list(set(tokens))
+        if not ' ' in tokens_flatten:
+            tokens_flatten.append(' ')
+        # Create process id
+        process_id = str(uuid.uuid1())
+        #Check if tmpdir exists
+        if not os.path.exists(self.conf['tmp_dir']):
+            os.mkdir(self.conf['tmp_dir'])
+        os.mkdir(os.path.join(self.conf['tmp_dir'], '%s_converted_snt' % process_id))
+        #Processing the file unitex.cod from tokens
+        unitex_text_cod(self.conf['tmp_dir'], process_id, tokens, tokens_flatten)
+        open(os.path.join(self.conf['tmp_dir'], '%s_converted_snt/enter.pos' % process_id),'w').close()
+        tokens_file = file(os.path.join(self.conf['tmp_dir'], '%s_converted_snt/tokens.txt' % process_id), 'w')
+
+        #The tokens.txt file should start with the number (a number) of tokens that appears in the file
+        output_tokens = "%010d\n"%int(len(tokens_flatten))
+        for token in tokens_flatten:
+            output_tokens += "%s\n"%(token)
+        #Save the strings in each files, and close the files.
+        tokens_file.write(output_tokens.encode('utf-16'))
+        tokens_file.close()
+        generate_dlf_dlc_from_pos(self.conf['tmp_dir'], process_id, pos)
+        
+        # Apply delas
+        delas_conf = self.conf['delas_applied'][lang]
+        delas = []
+        for dela in delas_conf:
+            dela_path = os.path.join(self.conf['unitex_dir'], 'Dela', dela)
+            if os.path.exists(dela_path):
+                delas.append("-m%s"%dela_path)
+            else:
+                self.logger.error("[ERROR] Dico %s doesn't exist." % dela_path)
+                
+        #Execute UNITEX commands, first engine locate, after engine concord
+        self.grammar = self.conf['grammar_applied'][0]
+        self.manager.Locate('-t%s/%s_converted.snt'%(self.conf['tmp_dir'], process_id),'%s/Graphs/%s'%(self.conf['unitex_dir'], self.grammar),'-a%s/Alphabets/%s/Alphabet.txt'%(self.conf['unitex_dir'], lang),'-L','-R','-n200','-z','-Y', *delas)
+        self.manager.Concord('%s/%s_converted_snt/concord.ind'%(self.conf['tmp_dir'], process_id),'-m%s/%s_out'%(self.conf['tmp_dir'], process_id))
+        #The output of previus commands is in s_out+process_id.
+        out_file = file(os.path.join(self.conf['tmp_dir'], '%s_out' % process_id), 'r')
+        salida = ''
+        for line in out_file:
+                salida += line.decode('utf-16')    
+        out_file.close() #Close output file
+        #Destroy unitex environment
+        detroy_unitex_env(self.conf, process_id)
+        return salida
         
         
 # Instanciate an object
 unitexManager = UniteManager()
 
 # Get tokens
-tokens = unitexManager.tokenizer("Spain and england are different countries", "es")
-print tokens
+tokens_result = unitexManager.tokenizer("Spain and england are different countries", "es")
+print 'Tokens: ',tokens_result
 
 # Apply POSTtagging
-post = unitexManager.postagger(tokens, "es")
-print post
+pos_tagging = unitexManager.postagger(tokens_result, "es")
+print 'Pos tagging: ',pos_tagging
 
 # Apply Grammar
-#post = unitexManager.grammar(tokens, "es")
-#print post
+grammar = unitexManager.grammar(tokens_result, pos_tagging, "es")
+print '=> ',grammar
 
 
 
