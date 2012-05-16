@@ -1,0 +1,89 @@
+# Overview
+Unitext-manager provides a high level layer to work with [Unitex Corpus Processor](http://www-igm.univ-mlv.fr/~unitex/).
+You should install [Pyunitex](https://github.com/moliware/pyunitex)
+
+![Overview](http://labs.paradigmatecnologico.com/wordpress/wp-content/uploads/2012/05/unitex_manager_overview.png)
+
+# Easy to use
+
+You will be able to apply this grammar by means of Unitex-manager with a few lines
+
+![Simple grammar](http://labs.paradigmatecnologico.com/wordpress/wp-content/uploads/2012/05/sample_grammar.png)
+
+````
+# Instanciate an object
+unitexManager = UniteManager()
+
+# Get tokens
+tokens_result = unitexManager.tokenizer("Spain and england are different countries", "es")
+print 'Tokens: ',tokens_result
+
+# Apply POSTtagging
+pos_tagging = unitexManager.postagger(tokens_result, "es")
+print 'Pos tagging: ',pos_tagging
+
+# Apply Grammar
+grammar = unitexManager.grammar(tokens_result, pos_tagging, "es")
+print '=> ',grammar
+```
+
+# Output
+
+The output will be 
+```
+<?xml version="1.0" encoding="UTF-8" ?><result><country>Spain</country><country>england</country></result> 
+```
+
+See Unitex-manager running:
+````
+$ time python UnitexManager.py 
+/tmp/d0932785-9f61-11e1-abf9-c82a142ce8dd converted
+Normalizing /tmp/d0932785-9f61-11e1-abf9-c82a142ce8dd_converted...
+
+Done.
+Tokenizing text...
+
+Done.
+Tokens:  [u'Spain', u'and', u'england', u'are', u'different', u'countries']
+Initializing...
+Counting tokens...
+Applying dico  conf/unitex/Dela/es/country.bin...
+Looking for simple words...
+Looking for compound words...
+First block...              
+Sorting and saving tag sequences...
+Saving unknown words...
+Done.
+Tokens calculated []
+Processed
+Pos tagging:  [{'pos': [{'lemma': u'spain', 'pos': u'COUNTRY', 'flex': []}], 'form': u'Spain'}, {'pos': [{'lemma': u'and', 'pos': u'UNKNOWN', 'flex': []}], 'form': u'and'}, {'pos': [{'lemma': u'england', 'pos': u'COUNTRY', 'flex': []}], 'form': u'england'}, {'pos': [{'lemma': u'are', 'pos': u'UNKNOWN', 'flex': []}], 'form': u'are'}, {'pos': [{'lemma': u'different', 'pos': u'UNKNOWN', 'flex': []}], 'form': u'different'}, {'pos': [{'lemma': u'countries', 'pos': u'UNKNOWN', 'flex': []}], 'form': u'countries'}]
+[]
+[u'Spain,spain.COUNTRY', u'england,england.COUNTRY']
+[u'and', u'are', u'different', u'countries']
+Loading alphabet...
+Loading fst2...
+Loading token list...
+Loading morphological dictionaries...
+Computing fst2 tags...
+Loading dlf...
+Loading dlc...
+Optimizing fst2 pattern tags...
+Optimizing compound word dictionary...
+Optimizing fst2...
+Working...
+100% done      
+
+1 match
+11 recognized units
+(91.666% of the text is covered)
+83 exploration step
+Done.
+Merging outputs with text...
+Done.
+Done.
+=>  <?xml version="1.0" encoding="UTF-8" ?><result><country>Spain</country><country>england</country></result> 
+
+real	0m2.541s
+user	0m0.141s
+sys	0m0.092s
+```
