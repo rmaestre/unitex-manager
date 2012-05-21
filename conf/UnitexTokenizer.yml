@@ -1,3 +1,3 @@
 tmp_dir: '/tmp'
 unitex_dir: 'conf/unitex'
-supported_langs: ['es', 'en']
+supported_langs: ['es']
