@@ -126,7 +126,12 @@ class UnitexManager():
             if unknown != "":
                 tags.append("%s,.UNKNOWN"%unknown)
         tags_file.close()
-        return generate_pos(tags, tokens, self.conf['allowed_flex_codes'], self.conf['allowed_pos_tags'])
+        #Destroy unitex environment
+        detroy_unitex_env(self.conf, process_id)
+        aux = generate_pos(tags, tokens, self.conf['allowed_flex_codes'], self.conf['allowed_pos_tags'])
+        # Clean temporal files
+        detroy_unitex_env(self.conf, self.process_id)
+        return aux
         
         
     def grammar(self, tokens, pos, lang):
@@ -200,7 +205,7 @@ def main():
     unitexManager = UnitexManager()
 
     # Get tokens
-    tokens_result = unitexManager.tokenizer("Spain and england are different countries", "es")
+    tokens_result = unitexManager.tokenizer("me gusta mucho esto, pero lo otro me disgusta", "es")
     print 'Tokens: ',tokens_result
 
     # Apply POSTtagging
