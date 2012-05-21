@@ -192,24 +192,26 @@ class UniteManager():
         return salida
         
         
-# Instanciate an object
-unitexManager = UniteManager()
+def main():
+    """ Main procedure
+    """
+    # Instanciate an object
+    unitexManager = UniteManager()
 
-# Get tokens
-tokens_result = unitexManager.tokenizer("Spain and england are different countries", "es")
-print 'Tokens: ',tokens_result
+    # Get tokens
+    tokens_result = unitexManager.tokenizer("Spain and england are different countries", "es")
+    print 'Tokens: ',tokens_result
 
-# Apply POSTtagging
-pos_tagging = unitexManager.postagger(tokens_result, "es")
-print 'Pos tagging: ',pos_tagging
+    # Apply POSTtagging
+    pos_tagging = unitexManager.postagger(tokens_result, "es")
+    print 'Pos tagging: ',pos_tagging
 
-# Apply Grammar
-grammar = unitexManager.grammar(tokens_result, pos_tagging, "es")
-print '=> ',grammar
+    # Apply Grammar
+    grammar = unitexManager.grammar(tokens_result, pos_tagging, "es")
+    print '=> ',grammar
 
-
-
-
+if __name__ == '__main__':
+    main()
 
 
 
