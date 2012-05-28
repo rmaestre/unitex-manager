@@ -1,8 +1,8 @@
 tmp_dir: '/tmp'
 unitex_dir: 'conf/unitex'
 delas_applied: 
-    es: ['es/positive.bin','es/negative.bin','es/negation.bin','es/enhancer.bin','es/attenuator.bin','es/connector.bin']
+    es: ['es/dec.bin','es/inversion.bin','es/negative.bin','es/positive.bin','es/connector.bin']
     en: []
 allowed_flex_codes: []
-allowed_pos_tags: ['UNKNOWN', 'ATTENUATOR', 'ENHANCER', 'NEGATION', 'NEGATIVE', 'POSITIVE', 'CONNECTOR']
+allowed_pos_tags: ['UNKNOWN', 'DEC', 'INV', 'NEG', 'POS', 'CONNECTOR']
 supported_langs: ['es']
