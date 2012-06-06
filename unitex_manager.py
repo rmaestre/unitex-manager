@@ -45,8 +45,9 @@ class UnitexManager():
         self.manager.Tokenize(os.path.join(self.conf['tmp_dir'], '%s_converted.snt'% self.process_id),'-a%s'%os.path.join(self.conf['unitex_dir'], 'Alphabets', lang, 'Alphabet.txt'))
         # Get tokens from file
         tokens_file = open(os.path.join(self.conf['tmp_dir'], '%s_converted_snt/tokens.txt' % self.process_id), "r")
-        tokens = re.split('\r\n', unicode(tokens_file.read().decode('utf-16')), re.U)
+        tokens = unicode(tokens_file.read().decode('UTF-16')).split('\r\n')
         tokens.remove(tokens[0])
+        #print tokens
         tokens = unitex_tokens(self.conf['tmp_dir'], self.process_id, tokens)
         try:
             while True:
@@ -205,7 +206,8 @@ def main():
     unitexManager = UnitexManager()
 
     # Get tokens
-    tokens_result = unitexManager.tokenizer("me gusta mucho esto, pero lo otro me disgusta", "es")
+    text = "cuidado con esas ofertas fantasma, yo estaba en MAMBA_GENERAL_ENTITY y me llamaron para ofrecermela (trio), me acogi a ella y el dia 28 de junio hola que tal"
+    tokens_result = unitexManager.tokenizer(text, "es")
     print 'Tokens: ',tokens_result
 
     # Apply POSTtagging
