@@ -35,7 +35,7 @@ class UnitexManager():
         detroy_unitex_env(self.conf, self.process_id)
         # Create file with input text
         input_txt = file(os.path.join(self.conf['tmp_dir'], self.process_id),'w')
-        input_txt.write(input_str.encode('utf-8'))
+        input_txt.write(input_str)
         input_txt.close()
         # Create environment 
         os.mkdir(os.path.join(self.conf['tmp_dir'], '%s_converted_snt' % self.process_id))
